@@ -10,7 +10,6 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-@Builder
 public class MemberEntity extends BaseEntity{
     @Id
     @Column(name = "member_id", nullable = false)
@@ -28,6 +27,8 @@ public class MemberEntity extends BaseEntity{
     private String memberBirthM;
     @Column(name = "member_birthD", nullable = false)
     private String memberBirthD;
+    @Column(name = "member_birthGM", nullable = false)
+    private String memberBirthGM;
 
     @Column(name = "member_gender",nullable = false)
     private String memberGender;
@@ -38,17 +39,17 @@ public class MemberEntity extends BaseEntity{
     @Column(name = "member_phone", nullable = false)
     private String memberPhone;
 
-    @Column(name = "smssts_yn", nullable = false)
+    @Column(name = "member_syn", nullable = false)
     private String smsStsYn;
 
     @Column(name = "member_email", nullable = false)
     private String memberEmail;
 
-    @Column(name = "emailsts_yn", nullable = false)
+    @Column(name = "member_eyn", nullable = false)
     private String emailStsYn;
 
     @Column(name = "member_roadAddress",nullable = false)
-    private String memberroadAddress;
+    private String memberRoadAddress;
 
     @Column(name = "member_zipCode",nullable = false)
     private String memberZipCode;
@@ -57,7 +58,7 @@ public class MemberEntity extends BaseEntity{
     private String memberDetailAddress;
 
     @Column(name = "member_role", nullable = false)
-    private String memberRole;
+    private MemberRole memberRole;
 
     @Column(name = "member_social")
     private boolean memberSocial;

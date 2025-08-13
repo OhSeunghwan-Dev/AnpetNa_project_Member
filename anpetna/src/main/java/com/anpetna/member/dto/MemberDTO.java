@@ -1,11 +1,19 @@
 package com.anpetna.member.dto;
 
+import com.anpetna.member.domain.MemberEntity;
+import com.anpetna.member.domain.MemberRole;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 
 @Data
+@Getter
 @Builder
 public class MemberDTO {
+
+    private String status;
+    private MemberDTO memberDTO;
+
     private String memberId;//아이디
     private String memberPw;//비밀번호
     private String memberName;//이름
@@ -20,9 +28,33 @@ public class MemberDTO {
     private String memberZipCode;//우편번호
     private boolean social;//소셜로그인
     private String memberHasPet;//반려동물유무
+    private MemberRole memberRole;//권한
 
-    private String fileName;//프로필 사진 이름
+    private String memberFileImage;//프로필 사진 이름
 
     private String etc;
 
+    public static MemberDTO from(MemberEntity memberEntity) {
+        //MemberInfoResponse
+        return MemberDTO.builder()
+                .status("success")
+                        .memberId(memberEntity.getMemberId())
+                        .memberName(memberEntity.getMemberName())
+                        .memberBirthY(memberEntity.getMemberBirthY())
+                        .memberBirthM(memberEntity.getMemberBirthM())
+                        .memberBirthD(memberEntity.getMemberBirthD())
+                        .memberBirthGM(memberEntity.getMemberBirthGM())
+                        .memberGender(memberEntity.getMemberGender())
+                        .memberEmail(memberEntity.getMemberEmail())
+                        .memberPhone(memberEntity.getMemberPhone())
+                        .memberRoadAddress(memberEntity.getMemberRoadAddress())
+                        .memberZipCode(memberEntity.getMemberZipCode())
+                        .social(memberEntity.isMemberSocial())
+                        .memberHasPet(memberEntity.getMemberHasPet())
+                        .memberRole(memberEntity.getMemberRole())
+                        .memberFileImage(memberEntity.getMemberFileImage())
+                        .etc(memberEntity.getMemberEtc())
+                        .build();
+
+    }
 }
