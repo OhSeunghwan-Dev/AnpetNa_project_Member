@@ -1,5 +1,7 @@
 package com.anpetna.member.domain;
 
+import com.anpetna.coredomain.BaseEntity;
+import com.anpetna.member.constant.MemberRole;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -7,10 +9,11 @@ import lombok.*;
 @Table(name = "anpetna_member")
 @Getter
 @Setter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class MemberEntity extends BaseEntity{
+public class MemberEntity extends BaseEntity {
     @Id
     @Column(name = "member_id", nullable = false)
     private String memberId;
@@ -57,6 +60,7 @@ public class MemberEntity extends BaseEntity{
     @Column(name = "member_detailAddress", nullable = false)
     private String memberDetailAddress;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "member_role", nullable = false)
     private MemberRole memberRole;
 

@@ -1,21 +1,27 @@
 package com.anpetna.member.service;
 
+import com.anpetna.member.domain.MemberEntity;
 import com.anpetna.member.dto.MemberDTO;
-import org.springframework.stereotype.Service;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
-public interface MemberService {
+import java.util.List;
 
-    public void join(MemberDTO memberDTO);
+public interface MemberService extends UserDetailsService {
 
-    public void login(MemberDTO memberDTO);
+    public void join(MemberDTO memberDTO) throws MemberIdExistException;
 
-    public void readOne(MemberDTO memberDTO);
+    public MemberDTO readOne(String memberId);
 
-    public void readAll();
+    public List<MemberEntity> readAll();
 
     public void modify(MemberDTO memberDTO);
 
     public void delete(MemberDTO memberDTO);
 
     public void chkDuplicatedIt(MemberDTO memberDTO);
+
+    static class MemberIdExistException extends Exception {
+
+    }
+
 }

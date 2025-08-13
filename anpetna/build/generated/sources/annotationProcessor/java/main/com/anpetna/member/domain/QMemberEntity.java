@@ -19,7 +19,7 @@ public class QMemberEntity extends EntityPathBase<MemberEntity> {
 
     public static final QMemberEntity memberEntity = new QMemberEntity("memberEntity");
 
-    public final QBaseEntity _super = new QBaseEntity(this);
+    public final com.anpetna.coredomain.QBaseEntity _super = new com.anpetna.coredomain.QBaseEntity(this);
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createDate = _super.createDate;
@@ -59,7 +59,7 @@ public class QMemberEntity extends EntityPathBase<MemberEntity> {
 
     public final StringPath memberRoadAddress = createString("memberRoadAddress");
 
-    public final StringPath memberRole = createString("memberRole");
+    public final EnumPath<com.anpetna.member.constant.MemberRole> memberRole = createEnum("memberRole", com.anpetna.member.constant.MemberRole.class);
 
     public final BooleanPath memberSocial = createBoolean("memberSocial");
 
