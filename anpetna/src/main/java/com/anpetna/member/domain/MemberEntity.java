@@ -10,6 +10,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
+@Builder
 public class MemberEntity extends BaseEntity{
     @Id
     @Column(name = "member_id", nullable = false)

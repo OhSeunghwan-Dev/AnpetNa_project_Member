@@ -1,8 +1,10 @@
 package com.anpetna.member.dto;
 
+import lombok.Builder;
 import lombok.Data;
 
 @Data
+@Builder
 public class MemberDTO {
     private String memberId;//아이디
     private String memberPw;//비밀번호
