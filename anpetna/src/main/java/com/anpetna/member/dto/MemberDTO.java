@@ -6,9 +6,9 @@ import lombok.Data;
 import lombok.Getter;
 
 @Data
-@Builder
-public class MemberDTO extends MemberReadDTO {
+public class MemberDTO {
 
+//    private Long memberIndex;
     private String status;
     private MemberDTO memberDTO;
 

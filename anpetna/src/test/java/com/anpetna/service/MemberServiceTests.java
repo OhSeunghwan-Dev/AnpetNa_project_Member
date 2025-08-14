@@ -73,7 +73,7 @@ public class MemberServiceTests {
                     return MemberDTO.from(entity);
                 });
         // when
-        MemberDTO member = service.readOne("user01");
+        MemberDTO member = service.readOne();
         // then
         assertThat(member.getMemberId()).isEqualTo("user01");
         assertThat(member.getMemberName()).isEqualTo("test");
@@ -144,7 +144,7 @@ public class MemberServiceTests {
         assertThat(member.getMemberId()).isEqualTo("user01");
 
     }
-    
+
     @Test
     void loadUserByUsername_test() {
         // given

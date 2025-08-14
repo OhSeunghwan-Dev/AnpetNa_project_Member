@@ -1,9 +1,13 @@
 package com.anpetna.member.domain;
 
-import com.anpetna.coredomain.BaseEntity;
+import com.anpetna.coreDomain.BaseEntity;
+import com.anpetna.coreDomain.ImageEntity;
 import com.anpetna.member.constant.MemberRole;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "anpetna_member")
@@ -60,7 +64,6 @@ public class MemberEntity extends BaseEntity {
     @Column(name = "member_detailAddress", nullable = false)
     private String memberDetailAddress;
 
-    @Enumerated(EnumType.STRING)
     @Column(name = "member_role", nullable = false)
     private MemberRole memberRole;
 
@@ -70,6 +73,6 @@ public class MemberEntity extends BaseEntity {
     @Column(name = "member_etc",length = 3000)
     private String memberEtc;
 
-    @Column(name = "member_fileImage")
-    private String memberFileImage;
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ImageEntity> images = new ArrayList<>();
 }
