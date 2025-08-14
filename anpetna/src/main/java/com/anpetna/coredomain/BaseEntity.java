@@ -1,4 +1,4 @@
-package com.anpetna.coredomain;
+package com.anpetna.coreDomain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;

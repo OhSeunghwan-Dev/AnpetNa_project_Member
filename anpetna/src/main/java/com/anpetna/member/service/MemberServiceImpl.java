@@ -3,6 +3,8 @@ package com.anpetna.member.service;
 import com.anpetna.member.constant.MemberRole;
 import com.anpetna.member.domain.MemberEntity;
 import com.anpetna.member.dto.MemberDTO;
+import com.anpetna.member.dto.readMemberAll.ReadMemberAllReq;
+import com.anpetna.member.dto.readMemberAll.ReadMemberAllRes;
 import com.anpetna.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -63,27 +65,27 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public MemberDTO readOne(String memberId) {
+    public MemberEntity readOne(MemberDTO memberDTO) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated()
                 || authentication instanceof org.springframework.security.authentication.AnonymousAuthenticationToken) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "인증이 필요합니다.");
         }
 
-        memberId = authentication.getName();
+        String memberId = authentication.getName();
         MemberEntity member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "회원을 찾을 수 없습니다."));
-        return MemberDTO.from(member);
+        return MemberEntity(member);
     }
 
     @Override
-    public List<MemberEntity> readAll() {
+     public ReadMemberAllRes memberReadAll(ReadMemberAllReq readMemberAllReq) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated()
                 || authentication instanceof org.springframework.security.authentication.AnonymousAuthenticationToken) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "인증이 필요합니다.");
         }
-        return memberRepository.findAll();
+        return;
     }
 
 
