@@ -3,8 +3,16 @@ package com.anpetna.member.service;
 import com.anpetna.member.constant.MemberRole;
 import com.anpetna.member.domain.MemberEntity;
 import com.anpetna.member.dto.MemberDTO;
+import com.anpetna.member.dto.deleteMember.DeleteMemberReq;
+import com.anpetna.member.dto.deleteMember.DeleteMemberRes;
+import com.anpetna.member.dto.joinMember.JoinMemberReq;
+import com.anpetna.member.dto.joinMember.JoinMemberRes;
+import com.anpetna.member.dto.modifyMember.ModifyMemberReq;
+import com.anpetna.member.dto.modifyMember.ModifyMemberRes;
 import com.anpetna.member.dto.readMemberAll.ReadMemberAllReq;
 import com.anpetna.member.dto.readMemberAll.ReadMemberAllRes;
+import com.anpetna.member.dto.readMemberOne.ReadMemberOneReq;
+import com.anpetna.member.dto.readMemberOne.ReadMemberOneRes;
 import com.anpetna.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -32,9 +40,9 @@ public class MemberServiceImpl implements MemberService {
     // final -> 생성자를 만들고 주입
 
     @Override
-    public void join(MemberDTO memberDTO) throws MemberIdExistException{
+    public JoinMemberRes join(JoinMemberReq joinMemberReq) throws MemberIdExistException{
 
-        String memberId = memberDTO.getMemberId();
+        String memberId = joinMemberReq.getMemberId();
 
         boolean exist = memberRepository.existsById(memberId);
 
@@ -42,11 +50,12 @@ public class MemberServiceImpl implements MemberService {
             throw new MemberIdExistException();
         }
 
-        MemberEntity member = modelMapper.map(memberDTO, MemberEntity.class);
-        member.setMemberPw(passwordEncoder.encode(memberDTO.getMemberPw()));
+        MemberEntity member = modelMapper.map(joinMemberReq, MemberEntity.class);
+        member.setMemberPw(passwordEncoder.encode(joinMemberReq.getMemberPw()));
         member.setMemberRole(MemberRole.USER);
 
         memberRepository.save(member);
+        return JoinMemberRes.from(member);
     }
 
     @Override
@@ -65,7 +74,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public MemberEntity readOne(MemberDTO memberDTO) {
+    public ReadMemberOneRes readOne(ReadMemberOneReq readMemberOneReq) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated()
                 || authentication instanceof org.springframework.security.authentication.AnonymousAuthenticationToken) {
@@ -75,54 +84,57 @@ public class MemberServiceImpl implements MemberService {
         String memberId = authentication.getName();
         MemberEntity member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "회원을 찾을 수 없습니다."));
-        return MemberEntity(member);
+        return ReadMemberOneRes.from(member);
     }
 
     @Override
-     public ReadMemberAllRes memberReadAll(ReadMemberAllReq readMemberAllReq) {
+     public List<ReadMemberAllRes> memberReadAll() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated()
                 || authentication instanceof org.springframework.security.authentication.AnonymousAuthenticationToken) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "인증이 필요합니다.");
         }
-        return;
+
+        List<MemberEntity> member = memberRepository.findAll();
+
+        return ReadMemberAllRes.from(member);
     }
 
 
     @Override
-    public void modify(MemberDTO memberDTO) {
+    public ModifyMemberRes modify(ModifyMemberReq modifyMemberReq) {
 
-        String memberId = memberDTO.getMemberId();
+        String memberId = modifyMemberReq.getMemberId();
 
         MemberEntity member = memberRepository.findById(memberId).orElse(null);
         if (member == null) {
             throw new UsernameNotFoundException(memberId);
         }
 
-        member.setMemberPw(passwordEncoder.encode(memberDTO.getMemberPw()));
-        member.setMemberPhone(memberDTO.getMemberPhone());
-        member.setMemberEmail(memberDTO.getMemberEmail());
-        member.setMemberZipCode(memberDTO.getMemberZipCode());
-        member.setMemberRoadAddress(memberDTO.getMemberRoadAddress());
-        member.setMemberEtc(memberDTO.getEtc());
+        member.setMemberPw(passwordEncoder.encode(modifyMemberReq.getMemberPw()));
+        member.setMemberPhone(modifyMemberReq.getMemberPhone());
+        member.setMemberEmail(modifyMemberReq.getMemberEmail());
+        member.setMemberZipCode(modifyMemberReq.getMemberZipCode());
+        member.setMemberRoadAddress(modifyMemberReq.getMemberRoadAddress());
+        member.setMemberEtc(modifyMemberReq.getEtc());
+        member.setMemberHasPet(modifyMemberReq.getMemberHasPet());
+//        member.setImages(modifyMemberReq.getMemberFileImage());
 
         memberRepository.save(member);
+
+        return null;
 
     }
 
     @Override
-    public void delete(MemberDTO memberDTO) {
+    public DeleteMemberRes delete(DeleteMemberReq deleteMemberReq) {
 
-        String memberId = memberDTO.getMemberId();
+        String memberId = deleteMemberReq.getMemberId();
 
         MemberEntity member = memberRepository.findById(memberId).orElse(null);
 
         memberRepository.delete(member);
-
-    }
-
-    @Override
-    public void chkDuplicatedIt(MemberDTO memberDTO) {
+        return null;
 
     }
 

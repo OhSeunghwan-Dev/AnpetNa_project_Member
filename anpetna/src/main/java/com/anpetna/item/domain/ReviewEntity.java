@@ -37,5 +37,5 @@ public class ReviewEntity {
     private ItemEntity item;
 
     @OneToMany(mappedBy = "review", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ImageEntity> images = new ArrayList<>();
+    private final List<ImageEntity> images = new ArrayList<>();
 }
