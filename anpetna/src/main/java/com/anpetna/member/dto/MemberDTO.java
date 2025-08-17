@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
 
+import java.util.List;
+
 @Data
 public class MemberDTO {
 
@@ -28,31 +30,8 @@ public class MemberDTO {
     private String memberHasPet;//반려동물유무
     private MemberRole memberRole;//권한
 
-    private String memberFileImage;//프로필 사진 이름
+    private List memberFileImage;//프로필 사진 이름
 
     private String etc;
 
-//    public static MemberDTO from(MemberEntity memberEntity) {
-//        //MemberInfoResponse
-//        return MemberDTO.builder()
-//                .status("success")
-//                        .memberId(memberEntity.getMemberId())
-//                        .memberName(memberEntity.getMemberName())
-//                        .memberBirthY(memberEntity.getMemberBirthY())
-//                        .memberBirthM(memberEntity.getMemberBirthM())
-//                        .memberBirthD(memberEntity.getMemberBirthD())
-//                        .memberBirthGM(memberEntity.getMemberBirthGM())
-//                        .memberGender(memberEntity.getMemberGender())
-//                        .memberEmail(memberEntity.getMemberEmail())
-//                        .memberPhone(memberEntity.getMemberPhone())
-//                        .memberRoadAddress(memberEntity.getMemberRoadAddress())
-//                        .memberZipCode(memberEntity.getMemberZipCode())
-//                        .social(memberEntity.isMemberSocial())
-//                        .memberHasPet(memberEntity.getMemberHasPet())
-//                        .memberRole(memberEntity.getMemberRole())
-//                        .memberFileImage(memberEntity.getMemberFileImage())
-//                        .etc(memberEntity.getMemberEtc())
-//                        .build();
-//
-//    }
 }

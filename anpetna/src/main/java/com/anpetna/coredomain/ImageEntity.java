@@ -29,7 +29,7 @@ public class ImageEntity {
     @Column(name = "image_ord", nullable = false)
     private Integer sortOrder = 0;
 
-    // 부모들 (nullable)
+//     부모들 (nullable)
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
     @JoinColumn(name = "board_id", foreignKey = @ForeignKey(name = "fk_image_board"))
     private BoardEntity board;
@@ -49,7 +49,7 @@ public class ImageEntity {
     private ReviewEntity review;
 
 
-    // ====== 편의 메서드: 부모 연결은 한 번에 하나만 ======
+//     ====== 편의 메서드: 부모 연결은 한 번에 하나만 ======
     public void attachToBoard(BoardEntity b) {
         this.board = b;
         this.member = null;
@@ -60,7 +60,7 @@ public class ImageEntity {
     public void attachToMember(MemberEntity m) {
         this.board = null;
         this.member = m;
-        this.item = null;
+       this.item = null;
         this.review= null;
         if (m != null) m.getImages().add(this);
     }

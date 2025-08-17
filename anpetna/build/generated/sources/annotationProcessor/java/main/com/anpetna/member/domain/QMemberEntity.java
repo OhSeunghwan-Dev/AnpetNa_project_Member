@@ -7,6 +7,7 @@ import com.querydsl.core.types.dsl.*;
 import com.querydsl.core.types.PathMetadata;
 import javax.annotation.processing.Generated;
 import com.querydsl.core.types.Path;
+import com.querydsl.core.types.dsl.PathInits;
 
 
 /**
@@ -19,12 +20,14 @@ public class QMemberEntity extends EntityPathBase<MemberEntity> {
 
     public static final QMemberEntity memberEntity = new QMemberEntity("memberEntity");
 
-    public final com.anpetna.coredomain.QBaseEntity _super = new com.anpetna.coredomain.QBaseEntity(this);
+    public final com.anpetna.coreDomain.QBaseEntity _super = new com.anpetna.coreDomain.QBaseEntity(this);
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createDate = _super.createDate;
 
     public final StringPath emailStsYn = createString("emailStsYn");
+
+    public final ListPath<com.anpetna.coreDomain.ImageEntity, com.anpetna.coreDomain.QImageEntity> images = this.<com.anpetna.coreDomain.ImageEntity, com.anpetna.coreDomain.QImageEntity>createList("images", com.anpetna.coreDomain.ImageEntity.class, com.anpetna.coreDomain.QImageEntity.class, PathInits.DIRECT2);
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> latestDate = _super.latestDate;
@@ -42,8 +45,6 @@ public class QMemberEntity extends EntityPathBase<MemberEntity> {
     public final StringPath memberEmail = createString("memberEmail");
 
     public final StringPath memberEtc = createString("memberEtc");
-
-    public final StringPath memberFileImage = createString("memberFileImage");
 
     public final StringPath memberGender = createString("memberGender");
 
