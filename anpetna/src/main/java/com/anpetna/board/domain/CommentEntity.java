@@ -5,11 +5,13 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
+@Table(name = "anpetna_commnet")
 @Getter
 @Setter
 @Builder
 @AllArgsConstructor // 모든 필드값으로 생성자 만듬
 @NoArgsConstructor // 기본생성자
+@ToString
 public class CommentEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
