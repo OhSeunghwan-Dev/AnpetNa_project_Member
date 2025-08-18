@@ -4,12 +4,12 @@ import com.anpetna.member.constant.MemberRole;
 import com.anpetna.member.domain.MemberEntity;
 import com.anpetna.member.dto.MemberDTO;
 import com.anpetna.member.dto.readMemberOne.ReadMemberOneRes;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
+@Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -27,9 +27,12 @@ public class JoinMemberRes {
     private String memberPhone;//전화번호
     private String memberRoadAddress;//주소
     private String memberZipCode;//우편번호
+    private String memberDetailAddress;
     private boolean social;//소셜로그인
     private String memberHasPet;//반려동물유무
     private MemberRole memberRole;//권한
+    private String emailStsYn;
+    private String smsStsYn;
 
     private List memberFileImage;//프로필 사진 이름
 
@@ -39,6 +42,7 @@ public class JoinMemberRes {
         //MemberInfoResponse
         return JoinMemberRes.builder()
                 .memberId(memberEntity.getMemberId())
+                .memberPw(memberEntity.getMemberPw())
                 .memberName(memberEntity.getMemberName())
                 .memberBirthY(memberEntity.getMemberBirthY())
                 .memberBirthM(memberEntity.getMemberBirthM())
@@ -49,12 +53,16 @@ public class JoinMemberRes {
                 .memberPhone(memberEntity.getMemberPhone())
                 .memberRoadAddress(memberEntity.getMemberRoadAddress())
                 .memberZipCode(memberEntity.getMemberZipCode())
+                .memberDetailAddress(memberEntity.getMemberDetailAddress())
                 .social(memberEntity.isMemberSocial())
                 .memberHasPet(memberEntity.getMemberHasPet())
                 .memberRole(memberEntity.getMemberRole())
+                .emailStsYn(memberEntity.getEmailStsYn())
+                .smsStsYn(memberEntity.getSmsStsYn())
                 .memberFileImage(memberEntity.getImages())
                 .etc(memberEntity.getMemberEtc())
                 .build();
 
     }
+    // 포스트맨 테스트에 pw인코딩으로 null처리되어 있어서 우선 빌더에 넣음 차후 실제는 어떻게 해야할지 생각하고 삭제해야 함
 }

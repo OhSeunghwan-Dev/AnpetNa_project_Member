@@ -85,7 +85,7 @@ public class MemberServiceTests {
                 .social(false)
                 .memberHasPet("Y")
                 .etc("반려견 1마리 키우는 중")
-                .memberFileImage("~~~~~~~")
+                .memberFileImage(null)
                 .build();
 
         // stub1: passwordEncoder
@@ -192,21 +192,26 @@ public class MemberServiceTests {
         String memberId = "user01";
         ModifyMemberReq member = ModifyMemberReq.builder()
                 .memberId(memberId)
+                .memberPw("123456")
                 .memberPhone("010-1234-1234")
                 .memberEmail("test2@test.com")
                 .memberZipCode("00001")
                 .memberRoadAddress("한국")
                 .etc("반려묘 한마리 추가입니다.")
+                .memberHasPet("Y")
                 .memberFileImage(null)
                 .build();
 
         MemberEntity oldMember = MemberEntity.builder()
                 .memberId(memberId)
+                .memberPw("123")
                 .memberPhone("010-1234-5678")
                 .memberEmail("test@test.com")
                 .memberZipCode("00000")
                 .memberRoadAddress("경기도")
                 .memberEtc("반려견 1마리 키우는 중")
+                .memberHasPet("Y")
+                .images(null)
                 .build();
 
         when(memberRepository.findById(memberId)).thenReturn(Optional.of(oldMember));
