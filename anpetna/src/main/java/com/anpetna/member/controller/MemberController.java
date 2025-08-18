@@ -5,6 +5,8 @@ import com.anpetna.member.dto.deleteMember.DeleteMemberReq;
 import com.anpetna.member.dto.deleteMember.DeleteMemberRes;
 import com.anpetna.member.dto.joinMember.JoinMemberReq;
 import com.anpetna.member.dto.joinMember.JoinMemberRes;
+import com.anpetna.member.dto.loginMember.LoginMemberReq;
+import com.anpetna.member.dto.loginMember.LoginMemberRes;
 import com.anpetna.member.dto.modifyMember.ModifyMemberReq;
 import com.anpetna.member.dto.modifyMember.ModifyMemberRes;
 import com.anpetna.member.dto.readMemberAll.ReadMemberAllRes;
@@ -12,13 +14,14 @@ import com.anpetna.member.dto.readMemberOne.ReadMemberOneReq;
 import com.anpetna.member.dto.readMemberOne.ReadMemberOneRes;
 import com.anpetna.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/member")
+@RequestMapping("/members")
 @RequiredArgsConstructor
 public class MemberController {
 
@@ -28,7 +31,7 @@ public class MemberController {
     @GetMapping("/readAll")
     @ResponseBody
     public ApiResult<List<ReadMemberAllRes>> memberReadAll() {
-       var readAll = memberService.memberReadAll();
+        List<ReadMemberAllRes> readAll = memberService.memberReadAll();
         return new ApiResult<>(readAll);
     }
 //=======================================
@@ -40,7 +43,7 @@ public class MemberController {
 
 
 //상세 조회
-    @GetMapping({"/readOne","/my page/{memberId}"})
+    @GetMapping({"/readOne","/myPage/{memberId}"})
     @ResponseBody
     @Transactional
     public ApiResult<ReadMemberOneRes> readOne(@PathVariable ReadMemberOneReq memberId) {
@@ -60,14 +63,18 @@ public class MemberController {
 //    프론트에서 보여지는 것도 일정 정보만 볼 수 있게 해야 함
     //================================================
 
+    @GetMapping("/modify/{memberId}")
+    public void modifyGet(){
+
+    }
+
 
 //수정
     @PostMapping("/modify/{memberId}")
     @ResponseBody
     @Transactional
     public ApiResult<ModifyMemberRes> modify(
-            @RequestBody ModifyMemberReq modifyMemberReq,
-            @PathVariable Long memberId) throws MemberService.MemberIdExistException {
+            @RequestBody ModifyMemberReq modifyMemberReq) throws MemberService.MemberIdExistException {
 
        var modify = memberService.modify(modifyMemberReq);
         return new ApiResult<>(modify);
@@ -79,7 +86,7 @@ public class MemberController {
 
 
 //삭제
-    @GetMapping("/boards/{memberId}")
+    @GetMapping("/delete/{memberId}")
     @ResponseBody
     @Transactional
     public ApiResult<DeleteMemberRes> delete(@PathVariable DeleteMemberReq memberId)
@@ -95,7 +102,7 @@ public class MemberController {
 
 
 //등록
-    @PostMapping("/boards")
+    @PostMapping("/join")
     public ApiResult<JoinMemberRes> join(@RequestBody JoinMemberReq joinMemberReq) throws MemberService.MemberIdExistException {
 
         var join = memberService.join(joinMemberReq);
@@ -115,5 +122,13 @@ public class MemberController {
 //409 Conflict — 동시성 충돌(optimistic lock 실패)
 //500 Internal Server Error — 기타 서버 오류
 //→ @ControllerAdvice로 예외를 잡아 일관된 ApiResult 에러 포맷으로 변환
+
+
+
+    @PostMapping("/login")
+    public LoginMemberRes login(@RequestBody LoginMemberReq loginMemberReq) throws MemberService.MemberIdExistException {
+        LoginMemberRes login = memberService.login(loginMemberReq);
+        return login;
+    }
 
 }

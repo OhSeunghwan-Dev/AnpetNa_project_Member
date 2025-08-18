@@ -15,24 +15,49 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
-        http.formLogin(form -> {form
-                .loginPage("/members/login")
-                .loginProcessingUrl("/members/login_process")
-                .defaultSuccessUrl("/members")
-                .failureUrl("/members/login.html?error=true")
-                .permitAll();
-        });
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-        http.authorizeHttpRequests((auth) -> auth
+        http.csrf(csrf -> csrf.disable()) // POST 테스트 편하게
+                .formLogin(form -> form
+                        .loginPage("/members/login")
+                        .loginProcessingUrl("/members/login_process")
+                        .defaultSuccessUrl("/members")
+                        .failureUrl("/members/login.html?error=true")
+                        .permitAll()
+                )
+                .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/", "/login", "/signup").permitAll()
-                        .requestMatchers("/admin").hasRole("ADMIN")
-                        .requestMatchers("/api/v1/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/api/v1/**").permitAll()   // 테스트용
+                        .requestMatchers("/members/join").permitAll() // GET/POST 모두 허용
                         .anyRequest().authenticated()
+                )
+                .headers(headers -> headers
+                        .frameOptions(frame -> frame.disable()) // H2 콘솔 허용
                 );
 
         return http.build();
     }
+
+
+//    @Bean
+//    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
+//        http.formLogin(form -> {form
+//                .loginPage("/members/login")
+//                .loginProcessingUrl("/members/login_process")
+//                .defaultSuccessUrl("/members")
+//                .failureUrl("/members/login.html?error=true")
+//                .permitAll();
+//        });
+//
+//        http.authorizeHttpRequests((auth) -> auth
+//                        .requestMatchers("/", "/login", "/signup").permitAll()
+//                        .requestMatchers("/admin").hasRole("ADMIN")
+//                        .requestMatchers("/api/v1/**").hasAnyRole("USER", "ADMIN")
+//                        .anyRequest().authenticated()
+//                );
+//
+//        return http.build();
+//    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {

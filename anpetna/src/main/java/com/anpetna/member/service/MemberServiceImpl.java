@@ -7,6 +7,8 @@ import com.anpetna.member.dto.deleteMember.DeleteMemberReq;
 import com.anpetna.member.dto.deleteMember.DeleteMemberRes;
 import com.anpetna.member.dto.joinMember.JoinMemberReq;
 import com.anpetna.member.dto.joinMember.JoinMemberRes;
+import com.anpetna.member.dto.loginMember.LoginMemberReq;
+import com.anpetna.member.dto.loginMember.LoginMemberRes;
 import com.anpetna.member.dto.modifyMember.ModifyMemberReq;
 import com.anpetna.member.dto.modifyMember.ModifyMemberRes;
 import com.anpetna.member.dto.readMemberAll.ReadMemberAllReq;
@@ -15,6 +17,7 @@ import com.anpetna.member.dto.readMemberOne.ReadMemberOneReq;
 import com.anpetna.member.dto.readMemberOne.ReadMemberOneRes;
 import com.anpetna.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -31,7 +34,8 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Service
-@Transactional(readOnly = true)
+@Transactional
+@Log4j2
 public class MemberServiceImpl implements MemberService {
 
     private final ModelMapper modelMapper;
@@ -52,10 +56,30 @@ public class MemberServiceImpl implements MemberService {
 
         MemberEntity member = modelMapper.map(joinMemberReq, MemberEntity.class);
         member.setMemberPw(passwordEncoder.encode(joinMemberReq.getMemberPw()));
+        log.info("======================");
+        log.info(member.getMemberPw());
+        log.info("======================");
         member.setMemberRole(MemberRole.USER);
-
+        log.info("======================");
+        log.info(member + "member");
+        log.info("======================");
         memberRepository.save(member);
         return JoinMemberRes.from(member);
+    }
+
+    @Override
+    public LoginMemberRes login(LoginMemberReq loginMemberReq) throws UsernameNotFoundException {
+        MemberEntity member = memberRepository.findById(loginMemberReq.getMemberId())
+                .orElseThrow(() -> new RuntimeException("회원이 존재하지 않습니다."));
+
+        if (!passwordEncoder.matches(loginMemberReq.getMemberPw(), member.getMemberPw())) {
+            throw new RuntimeException("비밀번호가 일치하지 않습니다.");
+        }
+
+        return LoginMemberRes.builder()
+                .memberId(member.getMemberId())
+                .memberPw(passwordEncoder.encode(loginMemberReq.getMemberPw()))
+                .build();
     }
 
     @Override
@@ -118,11 +142,11 @@ public class MemberServiceImpl implements MemberService {
         member.setMemberRoadAddress(modifyMemberReq.getMemberRoadAddress());
         member.setMemberEtc(modifyMemberReq.getEtc());
         member.setMemberHasPet(modifyMemberReq.getMemberHasPet());
-//        member.setImages(modifyMemberReq.getMemberFileImage());
+        member.setImages(modifyMemberReq.getMemberFileImage());
 
         memberRepository.save(member);
 
-        return null;
+        return ModifyMemberRes.from(member);
 
     }
 
@@ -137,6 +161,8 @@ public class MemberServiceImpl implements MemberService {
         return null;
 
     }
+
+
 
 
 }

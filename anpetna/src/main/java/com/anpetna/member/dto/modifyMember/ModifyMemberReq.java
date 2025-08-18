@@ -22,6 +22,8 @@ public class ModifyMemberReq {
     private String memberRoadAddress;//주소
     private String memberZipCode;//우편번호
     private String memberHasPet;//반려동물유무
+    private String emailStsYn;
+    private String smsStsYn;
 
     private List memberFileImage;//프로필 사진 이름
 
