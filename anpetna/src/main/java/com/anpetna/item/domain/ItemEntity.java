@@ -13,56 +13,63 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name="item")
+@Table(name="anpetna_item")
 @Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
+@ToString(exclude = "images")
 public class ItemEntity extends BaseEntity {
 
     @Id
-    @Column(name="item_Id")
+    @Column(name="item_id")
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Long itemId; // 상품코드
 
-    @Column(nullable=false,length=50)
+    @Column(name="item_name", nullable=false,length=50)
     private String itemName; // 상품명
 
-
-
-    @Column(nullable=false)
+    @Column(name="item_price", nullable=false)
     private int itemPrice; // 가격
 
-    @Column(nullable=false)
+    @Column(name="item_stock", nullable=false)
     private int itemStock; // 재고수량
 
     @Lob    // 데이터베이스에서 큰 크기의 데이터(텍스트나 바이너리)를 저장할 때 사용
-    @Column(nullable=false, length = 2000)
+    @Column(name="item_detail", nullable=false, length = 2000)
     private String itemDetail; // 상품 상세설명
 
-
-
-    @Column(nullable=false)
+    @Column(name="item_sellStatus", nullable=false)
     @Enumerated(EnumType.STRING)    // DB에 enum의 이름(문자열)으로 저장 (숫자로 저장하는 ORDINAL보다 안전).
     private ItemSellStatus itemSellStatus; // 상품 판매상태
 
+    @Column(name="item_saleStatus")
     @Enumerated(EnumType.STRING)    // DB에 enum의 이름(문자열)으로 저장 (숫자로 저장하는 ORDINAL보다 안전).
     private ItemSaleStatus itemSaleStatus; // 상품 세일상태
 
-    @Column(nullable=false)
+    @Column(name="item_Category", nullable=false)
     @Enumerated(EnumType.STRING)  // DB에 enum의 이름(문자열)으로 저장 (숫자로 저장하는 ORDINAL보다 안전).
     private ItemCategory itemCategory; // 상품 카테고리
 
-    @OneToMany(mappedBy = "itemImages", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ImageEntity> itemImages = new ArrayList<>();
+    /*@OneToMany(mappedBy = "itemImages", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ImageEntity> itemImages = new ArrayList<>();*/
 
-    @Column(nullable=false)
+    @Column(name="item_ThumbsId", nullable=false)
     private String itemThumbsId;
 
+    @Builder.Default
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ImageEntity> images = new ArrayList<>();
 
+
+    public void addImage(ImageEntity image) {
+        images.add(image);
+        image.setItem(this);
+    }
+    public void removeImage(ImageEntity image) {
+        images.remove(image);
+        image.setItem(null);
+    }
 
 
 /*    public void modify(String itemName, String itemCategory, String itemDetail, String itemImageUrl,
@@ -103,6 +110,4 @@ public class ItemEntity extends BaseEntity {
         // 상품의 재고를 증가
         this.stockNumber += stockNumber;
     }//addStock() 종료*/
-
-
 }

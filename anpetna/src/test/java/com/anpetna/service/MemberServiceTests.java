@@ -2,12 +2,9 @@ package com.anpetna.service;
 
 import com.anpetna.member.constant.MemberRole;
 import com.anpetna.member.domain.MemberEntity;
-import com.anpetna.member.dto.MemberDTO;
 import com.anpetna.member.dto.deleteMember.DeleteMemberReq;
 import com.anpetna.member.dto.joinMember.JoinMemberReq;
-import com.anpetna.member.dto.joinMember.JoinMemberRes;
 import com.anpetna.member.dto.modifyMember.ModifyMemberReq;
-import com.anpetna.member.dto.readMemberAll.ReadMemberAllReq;
 import com.anpetna.member.dto.readMemberAll.ReadMemberAllRes;
 import com.anpetna.member.dto.readMemberOne.ReadMemberOneReq;
 import com.anpetna.member.dto.readMemberOne.ReadMemberOneRes;

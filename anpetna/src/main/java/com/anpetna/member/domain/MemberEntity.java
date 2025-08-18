@@ -16,13 +16,13 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
+@ToString(exclude = "images")
 public class MemberEntity extends BaseEntity {
     @Id
     @Column(name = "member_id", nullable = false)
     private String memberId;
 
-    @Column(name = "member_pw", nullable = false, length = 40)
+    @Column(name = "member_pw", nullable = false)
     private String memberPw;
 
     @Column(name = "member_name", nullable = false)
@@ -73,6 +73,16 @@ public class MemberEntity extends BaseEntity {
     @Column(name = "member_etc",length = 3000)
     private String memberEtc;
 
+    @Builder.Default
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ImageEntity> images = new ArrayList<>();
+
+    public void addImage(ImageEntity image) {
+        images.add(image);
+        image.setMember(this);
+    }
+    public void removeImage(ImageEntity image) {
+        images.remove(image);
+        image.setMember(null);
+    }
 }

@@ -22,13 +22,21 @@ public class QImageEntity extends EntityPathBase<ImageEntity> {
 
     public static final QImageEntity imageEntity = new QImageEntity("imageEntity");
 
-    public final NumberPath<Long> id = createNumber("id", Long.class);
+    public final com.anpetna.board.domain.QBoardEntity board;
+
+    public final StringPath fileName = createString("fileName");
+
+    public final com.anpetna.item.domain.QItemEntity item;
 
     public final com.anpetna.member.domain.QMemberEntity member;
+
+    public final com.anpetna.item.domain.QReviewEntity review;
 
     public final NumberPath<Integer> sortOrder = createNumber("sortOrder", Integer.class);
 
     public final StringPath url = createString("url");
+
+    public final NumberPath<Long> uuid = createNumber("uuid", Long.class);
 
     public QImageEntity(String variable) {
         this(ImageEntity.class, forVariable(variable), INITS);
@@ -48,7 +56,10 @@ public class QImageEntity extends EntityPathBase<ImageEntity> {
 
     public QImageEntity(Class<? extends ImageEntity> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
+        this.board = inits.isInitialized("board") ? new com.anpetna.board.domain.QBoardEntity(forProperty("board")) : null;
+        this.item = inits.isInitialized("item") ? new com.anpetna.item.domain.QItemEntity(forProperty("item")) : null;
         this.member = inits.isInitialized("member") ? new com.anpetna.member.domain.QMemberEntity(forProperty("member")) : null;
+        this.review = inits.isInitialized("review") ? new com.anpetna.item.domain.QReviewEntity(forProperty("review"), inits.get("review")) : null;
     }
 
 }
