@@ -67,19 +67,37 @@ public class MemberServiceImpl implements MemberService {
         return JoinMemberRes.from(member);
     }
 
+//    @Override
+//    public LoginMemberRes login(LoginMemberReq loginMemberReq) throws UsernameNotFoundException {
+//        MemberEntity member = memberRepository.findById(loginMemberReq.getMemberId())
+//                .orElseThrow(() -> new RuntimeException("회원이 존재하지 않습니다."));
+//
+//        if (!passwordEncoder.matches(loginMemberReq.getMemberPw(), member.getMemberPw())) {
+//            throw new RuntimeException("비밀번호가 일치하지 않습니다.");
+//        }
+//
+//        return LoginMemberRes.builder()
+//                .memberId(member.getMemberId())
+//                .memberPw(passwordEncoder.encode(loginMemberReq.getMemberPw()))
+//                .build();
+//    }
+
     @Override
-    public LoginMemberRes login(LoginMemberReq loginMemberReq) throws UsernameNotFoundException {
-        MemberEntity member = memberRepository.findById(loginMemberReq.getMemberId())
-                .orElseThrow(() -> new RuntimeException("회원이 존재하지 않습니다."));
+    public LoginMemberRes login(LoginMemberReq req) {
+        MemberEntity member = memberRepository.findByMemberId((req.getMemberId()));
 
-        if (!passwordEncoder.matches(loginMemberReq.getMemberPw(), member.getMemberPw())) {
-            throw new RuntimeException("비밀번호가 일치하지 않습니다.");
+        if (member == null) {
+            throw new RuntimeException("아이디가 존재하지 않습니다.");
         }
-
-        return LoginMemberRes.builder()
-                .memberId(member.getMemberId())
-                .memberPw(passwordEncoder.encode(loginMemberReq.getMemberPw()))
-                .build();
+        if (!member.getMemberPw().equals(req.getMemberPw())) {
+            throw new RuntimeException("비밀번호가 올바르지 않습니다.");
+        }
+        LoginMemberRes res = new LoginMemberRes();
+//        res.setMemberId(member.getMemberId());
+//        res.setMemberPw(req.getMemberPw());
+        res.setToken(req.getMemberId());
+        res.setToken(req.getMemberPw());
+        return res;
     }
 
     @Override

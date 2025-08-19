@@ -9,7 +9,8 @@ import lombok.*;
 @NoArgsConstructor
 public class LoginMemberRes {
 
-    private String memberId;
-    private String memberPw;
+//    private String memberId;
+//    private String memberPw;
+    private String token;
 
 }

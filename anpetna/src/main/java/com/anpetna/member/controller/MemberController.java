@@ -1,6 +1,7 @@
 package com.anpetna.member.controller;
 
 import com.anpetna.ApiResult;
+import com.anpetna.config.JwtProvider;
 import com.anpetna.member.dto.deleteMember.DeleteMemberReq;
 import com.anpetna.member.dto.deleteMember.DeleteMemberRes;
 import com.anpetna.member.dto.joinMember.JoinMemberReq;
@@ -13,7 +14,13 @@ import com.anpetna.member.dto.readMemberAll.ReadMemberAllRes;
 import com.anpetna.member.dto.readMemberOne.ReadMemberOneReq;
 import com.anpetna.member.dto.readMemberOne.ReadMemberOneRes;
 import com.anpetna.member.service.MemberService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -26,8 +33,10 @@ import java.util.List;
 public class MemberController {
 
     private final MemberService memberService;
+    private final AuthenticationManager authenticationManager;
+    private final JwtProvider jwtProvider;
 
-//조회
+    //조회
     @GetMapping("/readAll")
     @ResponseBody
     public ApiResult<List<ReadMemberAllRes>> memberReadAll() {
@@ -63,12 +72,6 @@ public class MemberController {
 //    프론트에서 보여지는 것도 일정 정보만 볼 수 있게 해야 함
     //================================================
 
-    @GetMapping("/modify/{memberId}")
-    public void modifyGet(){
-
-    }
-
-
 //수정
     @PostMapping("/modify/{memberId}")
     @ResponseBody
@@ -76,7 +79,7 @@ public class MemberController {
     public ApiResult<ModifyMemberRes> modify(
             @RequestBody ModifyMemberReq modifyMemberReq) throws MemberService.MemberIdExistException {
 
-       var modify = memberService.modify(modifyMemberReq);
+       ModifyMemberRes modify = memberService.modify(modifyMemberReq);
         return new ApiResult<>(modify);
     }
 //===================================
@@ -125,10 +128,31 @@ public class MemberController {
 
 
 
+//    @PostMapping("/login")
+//    public LoginMemberRes login(@RequestBody LoginMemberReq loginMemberReq) throws MemberService.MemberIdExistException {
+//        LoginMemberRes login = memberService.login(loginMemberReq);
+//        return login;
+//    }
+
+
+//    @PostMapping("/login")
+//    public ResponseEntity<LoginMemberRes> login(@RequestBody LoginMemberReq loginMemberReq,
+//                                                HttpServletRequest request) throws MemberService.MemberIdExistException {
+//        LoginMemberRes loginRes = memberService.login(loginMemberReq);
+//        // 세션 생성
+//        HttpSession session = request.getSession(true);
+//        session.setAttribute("loginMember", loginRes);
+//        return ResponseEntity.ok(loginRes);
+//    }
+
+
     @PostMapping("/login")
-    public LoginMemberRes login(@RequestBody LoginMemberReq loginMemberReq) throws MemberService.MemberIdExistException {
-        LoginMemberRes login = memberService.login(loginMemberReq);
-        return login;
+    public ResponseEntity<?> login(@RequestBody LoginMemberReq req) {
+        var authToken = new UsernamePasswordAuthenticationToken(req.getMemberId(), req.getMemberPw());
+        Authentication auth = authenticationManager.authenticate(authToken); // 비번검증
+        String jwt = jwtProvider.create(auth); // 토큰 발급
+        return ResponseEntity.ok(new LoginMemberRes(jwt));
     }
+
 
 }
