@@ -1,5 +1,4 @@
 package com.anpetna.config;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,9 +26,9 @@ public class SecurityConfig {
                 .httpBasic(b -> b.disable())
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.POST, "/members/login").permitAll()
-                        .requestMatchers("/members/join").permitAll()
-                        .requestMatchers("/", "/signup", "/api/v1/**", "/members/readOne", "/members/readAll").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/member/login").permitAll()
+                        .requestMatchers("/member/join").permitAll()
+                        .requestMatchers("/", "/signup", "/api/v1/**", "/member/readOne", "/member/readAll", "/member/my_page/*").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(new JwtAuthenticationFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class);
@@ -44,58 +43,56 @@ public class SecurityConfig {
     }
 
 
-
-//    @Bean
-//    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-//
-//        http.csrf(csrf -> csrf.disable()) // POST 테스트 편하게
-//                .formLogin(form -> form
-//                        .loginPage("/members/login")
-//                        .loginProcessingUrl("/members/login_process")
-//                        .defaultSuccessUrl("/members")
-//                        .failureUrl("/members/login.html?error=true")
-//                        .permitAll()
-//                )
-//                .authorizeHttpRequests(auth -> auth
-//                        .requestMatchers("/", "/login", "/signup").permitAll()
-//                        .requestMatchers("/api/v1/**").permitAll()   // 테스트용
-//                        .requestMatchers("/members/join").permitAll() // GET/POST 모두 허용
-//                        .requestMatchers("/members/modify/").permitAll()
-//                        .requestMatchers("/members/delete/").permitAll()
-//                        .requestMatchers("/members/readOne").permitAll()
-//                        .requestMatchers("/members/readAll").permitAll()
-//                        .anyRequest().authenticated()
-//                )
-//                .headers(headers -> headers
-//                        .frameOptions(frame -> frame.disable()) // H2 콘솔 허용
-//                );
-//
-//        return http.build();
-//    }
-
-
 //    @Bean
 //    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
 //        http.formLogin(form -> {form
-//                .loginPage("/members/login")
-//                .loginProcessingUrl("/members/login_process")
-//                .defaultSuccessUrl("/members")
-//                .failureUrl("/members/login.html?error=true")
+//                .loginPage("/member/login")
+//                .loginProcessingUrl("/member/login_process")
+//                .defaultSuccessUrl("/member")
+//                .failureUrl("/member/login.html?error=true")
 //                .permitAll();
 //        });
-//
 //        http.authorizeHttpRequests((auth) -> auth
-//                        .requestMatchers("/", "/login", "/signup").permitAll()
-//                        .requestMatchers("/admin").hasRole("ADMIN")
-//                        .requestMatchers("/api/v1/**").hasAnyRole("USER", "ADMIN")
-//                        .anyRequest().authenticated()
-//                );
-//
+//                .requestMatchers("/", "/login", "/signup").permitAll()
+//                .requestMatchers("/admin").hasRole("ADMIN")
+//                .requestMatchers("/api/v1/**").hasAnyRole("USER", "ADMIN")
+//                .anyRequest().authenticated()
+//        );
 //        return http.build();
 //    }
-
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
+//    @Bean
+//    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
+//            throws Exception {
+//        return authenticationConfiguration.getAuthenticationManager();
+//    }
+
+//    @Bean
+//    SecurityFilterChain filterChain(HttpSecurity http, JwtAuthFilter jwt) throws Exception {
+//        http.csrf(AbstractHttpConfigurer::disable)
+//                .sessionManagement(sm -> {
+//                    sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+//                })
+//                .authorizeHttpRequests(auth -> {
+//                    auth.requestMatchers("/api/auth/**", "/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**",
+//                                    "/images/**", "/api/item/**", "/api/member/**", "/api/login/**").permitAll()
+//                            .anyRequest()
+//                            .authenticated();
+//                })
+//                .formLogin(AbstractHttpConfigurer::disable)
+//                .httpBasic(AbstractHttpConfigurer::disable)
+//                .exceptionHandling(e -> {
+//                    e.authenticationEntryPoint((req, res, ex) -> {
+//                        res.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+//                    });
+//                })
+//                .addFilterBefore(jwt, UsernamePasswordAuthenticationFilter.class);
+//        return http.build();
+//    }
+
+
 }

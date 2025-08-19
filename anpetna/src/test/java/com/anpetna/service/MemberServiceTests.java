@@ -15,10 +15,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -38,7 +40,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 @Slf4j
 public class MemberServiceTests {
     @InjectMocks
@@ -192,26 +194,21 @@ public class MemberServiceTests {
         String memberId = "user01";
         ModifyMemberReq member = ModifyMemberReq.builder()
                 .memberId(memberId)
-                .memberPw("123456")
                 .memberPhone("010-1234-1234")
                 .memberEmail("test2@test.com")
                 .memberZipCode("00001")
                 .memberRoadAddress("한국")
                 .etc("반려묘 한마리 추가입니다.")
-                .memberHasPet("Y")
                 .memberFileImage(null)
                 .build();
 
         MemberEntity oldMember = MemberEntity.builder()
                 .memberId(memberId)
-                .memberPw("123")
                 .memberPhone("010-1234-5678")
                 .memberEmail("test@test.com")
                 .memberZipCode("00000")
                 .memberRoadAddress("경기도")
                 .memberEtc("반려견 1마리 키우는 중")
-                .memberHasPet("Y")
-                .images(null)
                 .build();
 
         when(memberRepository.findById(memberId)).thenReturn(Optional.of(oldMember));

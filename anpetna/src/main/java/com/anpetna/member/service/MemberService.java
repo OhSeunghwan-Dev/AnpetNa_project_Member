@@ -14,7 +14,6 @@ import com.anpetna.member.dto.readMemberAll.ReadMemberAllReq;
 import com.anpetna.member.dto.readMemberAll.ReadMemberAllRes;
 import com.anpetna.member.dto.readMemberOne.ReadMemberOneReq;
 import com.anpetna.member.dto.readMemberOne.ReadMemberOneRes;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.List;

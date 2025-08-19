@@ -38,6 +38,7 @@ public class JoinMemberRes {
 
     private String etc;
 
+
     public static JoinMemberRes from(MemberEntity memberEntity) {
         //MemberInfoResponse
         return JoinMemberRes.builder()
@@ -64,5 +65,4 @@ public class JoinMemberRes {
                 .build();
 
     }
-    // 포스트맨 테스트에 pw인코딩으로 null처리되어 있어서 우선 빌더에 넣음 차후 실제는 어떻게 해야할지 생각하고 삭제해야 함
 }

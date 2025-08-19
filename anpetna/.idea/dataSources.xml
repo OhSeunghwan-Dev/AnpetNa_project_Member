@@ -14,7 +14,7 @@
       </jdbc-additional-properties>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
-    <data-source source="LOCAL" name="anpetnadb@localhost" uuid="8d473173-e337-41c9-84c6-9badd51a5bcd">
+    <data-source source="LOCAL" name="anpetnadb@localhost" uuid="0af8bd21-c86d-4bd8-8f5b-ee28671ad182">
       <driver-ref>mariadb</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.mariadb.jdbc.Driver</jdbc-driver>

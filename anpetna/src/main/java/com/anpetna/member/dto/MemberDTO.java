@@ -8,6 +8,7 @@ import lombok.Getter;
 import java.util.List;
 
 @Data
+@Builder
 public class MemberDTO {
 
 //    private Long memberIndex;

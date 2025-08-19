@@ -14,21 +14,22 @@ import com.anpetna.member.dto.readMemberAll.ReadMemberAllRes;
 import com.anpetna.member.dto.readMemberOne.ReadMemberOneReq;
 import com.anpetna.member.dto.readMemberOne.ReadMemberOneRes;
 import com.anpetna.member.service.MemberService;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/members")
+@RequestMapping("/member")
 @RequiredArgsConstructor
 public class MemberController {
 
@@ -40,7 +41,7 @@ public class MemberController {
     @GetMapping("/readAll")
     @ResponseBody
     public ApiResult<List<ReadMemberAllRes>> memberReadAll() {
-        List<ReadMemberAllRes> readAll = memberService.memberReadAll();
+       var readAll = memberService.memberReadAll();
         return new ApiResult<>(readAll);
     }
 //=======================================
@@ -52,11 +53,15 @@ public class MemberController {
 
 
 //상세 조회
-    @GetMapping({"/readOne","/myPage/{memberId}"})
+    @GetMapping({"/readOne","/my_page/{memberId}"})
     @ResponseBody
     @Transactional
-    public ApiResult<ReadMemberOneRes> readOne(@PathVariable ReadMemberOneReq memberId) {
-        var readOne = memberService.readOne(memberId);
+    public ApiResult<ReadMemberOneRes> readOne(@PathVariable String memberId) {
+
+        ReadMemberOneReq req = new ReadMemberOneReq();
+        req.setMemberId(memberId);
+
+        var readOne = memberService.readOne(req);
         return new ApiResult<>(readOne);
     }
 
@@ -72,14 +77,15 @@ public class MemberController {
 //    프론트에서 보여지는 것도 일정 정보만 볼 수 있게 해야 함
     //================================================
 
+
 //수정
-    @PostMapping("/modify/{memberId}")
+    @PostMapping("/modify")
     @ResponseBody
     @Transactional
     public ApiResult<ModifyMemberRes> modify(
             @RequestBody ModifyMemberReq modifyMemberReq) throws MemberService.MemberIdExistException {
 
-       ModifyMemberRes modify = memberService.modify(modifyMemberReq);
+       var modify = memberService.modify(modifyMemberReq);
         return new ApiResult<>(modify);
     }
 //===================================
@@ -89,12 +95,16 @@ public class MemberController {
 
 
 //삭제
-    @GetMapping("/delete/{memberId}")
+    @GetMapping("/delete")
     @ResponseBody
     @Transactional
-    public ApiResult<DeleteMemberRes> delete(@PathVariable DeleteMemberReq memberId)
+    public ApiResult<DeleteMemberRes> delete(Authentication authentication)
             throws MemberService.MemberIdExistException {
-        var delete = memberService.delete(memberId);
+
+        DeleteMemberReq deleteMemberReq = new DeleteMemberReq();
+        deleteMemberReq.setMemberId(authentication.getName());
+
+        var delete = memberService.delete(deleteMemberReq);
         return new ApiResult<>(delete);
     }
 //    ============================================
@@ -116,6 +126,15 @@ public class MemberController {
 //    서비스에서 DB에 저장(아이디는 중복이 되지 않게 검사필요)
 //=========-===========
 
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody LoginMemberReq req) {
+        var authToken = new UsernamePasswordAuthenticationToken(req.getMemberId(), req.getMemberPw());
+        Authentication auth = authenticationManager.authenticate(authToken); // 비번검증
+        String jwt = jwtProvider.create(auth); // 토큰 발급
+        return ResponseEntity.ok(new LoginMemberRes(jwt));
+    }
+
+
 //    DTO에 엔티티로 변환하는 메서드를 만듬/필요에 의해 사용
 //    흔한 예외/HTTP 응답 매핑 (실무에서 처리할 것)
 //400 Bad Request — 바디 구조/타입 불일치, 유효성 실패(@Valid)
@@ -128,31 +147,6 @@ public class MemberController {
 
 
 
-//    @PostMapping("/login")
-//    public LoginMemberRes login(@RequestBody LoginMemberReq loginMemberReq) throws MemberService.MemberIdExistException {
-//        LoginMemberRes login = memberService.login(loginMemberReq);
-//        return login;
-//    }
-
-
-//    @PostMapping("/login")
-//    public ResponseEntity<LoginMemberRes> login(@RequestBody LoginMemberReq loginMemberReq,
-//                                                HttpServletRequest request) throws MemberService.MemberIdExistException {
-//        LoginMemberRes loginRes = memberService.login(loginMemberReq);
-//        // 세션 생성
-//        HttpSession session = request.getSession(true);
-//        session.setAttribute("loginMember", loginRes);
-//        return ResponseEntity.ok(loginRes);
-//    }
-
-
-    @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginMemberReq req) {
-        var authToken = new UsernamePasswordAuthenticationToken(req.getMemberId(), req.getMemberPw());
-        Authentication auth = authenticationManager.authenticate(authToken); // 비번검증
-        String jwt = jwtProvider.create(auth); // 토큰 발급
-        return ResponseEntity.ok(new LoginMemberRes(jwt));
-    }
 
 
 }
