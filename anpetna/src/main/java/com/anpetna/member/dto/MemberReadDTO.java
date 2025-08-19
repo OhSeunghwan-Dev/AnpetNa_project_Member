@@ -26,7 +26,7 @@ public class MemberReadDTO {
                 .social(memberEntity.isMemberSocial())
                 .memberHasPet(memberEntity.getMemberHasPet())
                 .memberRole(memberEntity.getMemberRole())
-                .memberFileImage(memberEntity.getMemberFileImage())
+                .memberFileImage(memberEntity.getImages())
                 .etc(memberEntity.getMemberEtc())
                 .build();
 

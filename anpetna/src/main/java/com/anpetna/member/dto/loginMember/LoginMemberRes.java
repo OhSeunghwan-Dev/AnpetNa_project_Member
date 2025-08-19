@@ -1,5 +1,6 @@
 package com.anpetna.member.dto.loginMember;
 
+import com.anpetna.member.constant.MemberRole;
 import lombok.*;
 
 @Getter

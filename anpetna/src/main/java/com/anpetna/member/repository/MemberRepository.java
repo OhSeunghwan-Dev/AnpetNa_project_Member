@@ -8,6 +8,6 @@ import java.util.Optional;
 
 @Repository
 public interface MemberRepository extends JpaRepository<MemberEntity, String> {
-
     MemberEntity findByMemberId(String memberId);
+
 }
