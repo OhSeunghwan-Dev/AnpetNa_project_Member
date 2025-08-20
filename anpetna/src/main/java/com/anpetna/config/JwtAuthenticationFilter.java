@@ -4,8 +4,10 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -23,12 +25,21 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain chain) throws ServletException, IOException {
         String header = request.getHeader("Authorization");
-        if (StringUtils.hasText(header) && header.startsWith("Bearer ")) {
+        if (header != null && header.startsWith("Bearer ")) {
             String token = header.substring(7);
-            if (jwtProvider.validate(token)) {
-                Authentication auth = jwtProvider.getAuthentication(token);
-                SecurityContextHolder.getContext().setAuthentication(auth);
+            if (jwtProvider.validateToken(token)) {
+                String username = jwtProvider.getUsername(token);
+                UsernamePasswordAuthenticationToken authentication =
+                        new UsernamePasswordAuthenticationToken(username, null, null);
+                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                SecurityContextHolder.getContext().setAuthentication(authentication);
             }
+//        if (StringUtils.hasText(header) && header.startsWith("Bearer ")) {
+//            String token = header.substring(7);
+//            if (jwtProvider.validate(token)) {
+//                Authentication auth = jwtProvider.getAuthentication(token);
+//                SecurityContextHolder.getContext().setAuthentication(auth);
+//            }
         }
         chain.doFilter(request, response);
     }
