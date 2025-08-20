@@ -4,6 +4,7 @@ import com.anpetna.member.constant.MemberRole;
 import com.anpetna.member.domain.MemberEntity;
 import com.anpetna.member.dto.deleteMember.DeleteMemberReq;
 import com.anpetna.member.dto.joinMember.JoinMemberReq;
+import com.anpetna.member.dto.logoutMember.LogoutMemberRes;
 import com.anpetna.member.dto.modifyMember.ModifyMemberReq;
 import com.anpetna.member.dto.readMemberAll.ReadMemberAllRes;
 import com.anpetna.member.dto.readMemberOne.ReadMemberOneReq;
@@ -33,6 +34,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.*;
@@ -264,6 +266,16 @@ public class MemberServiceTests {
 
         assertThat(memberRepository.findById("user01")).isEqualTo(Optional.empty());
 
+    }
+
+    @Test
+    public void logout(){
+        //given
+        String token = UUID.randomUUID().toString();
+
+        //when
+
+        //then
     }
 
 }

@@ -8,6 +8,8 @@ import com.anpetna.member.dto.joinMember.JoinMemberReq;
 import com.anpetna.member.dto.joinMember.JoinMemberRes;
 import com.anpetna.member.dto.loginMember.LoginMemberReq;
 import com.anpetna.member.dto.loginMember.LoginMemberRes;
+import com.anpetna.member.dto.logoutMember.LogoutMemberReq;
+import com.anpetna.member.dto.logoutMember.LogoutMemberRes;
 import com.anpetna.member.dto.modifyMember.ModifyMemberReq;
 import com.anpetna.member.dto.modifyMember.ModifyMemberRes;
 import com.anpetna.member.dto.readMemberAll.ReadMemberAllRes;
@@ -126,13 +128,19 @@ public class MemberController {
 //    서비스에서 DB에 저장(아이디는 중복이 되지 않게 검사필요)
 //=========-===========
 
-    @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginMemberReq req) {
-        var authToken = new UsernamePasswordAuthenticationToken(req.getMemberId(), req.getMemberPw());
-        Authentication auth = authenticationManager.authenticate(authToken); // 비번검증
-        String jwt = jwtProvider.create(auth); // 토큰 발급
-        return ResponseEntity.ok(new LoginMemberRes(jwt));
-    }
+//    @PostMapping("/login")
+//    public ResponseEntity<?> login(@RequestBody LoginMemberReq req) {
+//        var authToken = new UsernamePasswordAuthenticationToken(req.getMemberId(), req.getMemberPw());
+//        Authentication auth = authenticationManager.authenticate(authToken); // 비번검증
+//        String jwt = jwtProvider.create(auth); // 토큰 발급
+//        return ResponseEntity.ok(new LoginMemberRes(jwt));
+//    }
+//
+//    @GetMapping("/logout")
+//    public LogoutMemberRes logout(LogoutMemberReq logoutMemberReq) {
+//        var logout = memberService.logout(logoutMemberReq);
+//        return null;
+//    }
 
 
 //    DTO에 엔티티로 변환하는 메서드를 만듬/필요에 의해 사용

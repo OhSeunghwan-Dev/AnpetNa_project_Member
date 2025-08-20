@@ -18,14 +18,17 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+    private final JwtProvider jwtProvider;
+
     @Bean
-    public SecurityFilterChain filterChain(org.springframework.security.config.annotation.web.builders.HttpSecurity http, JwtProvider jwtProvider) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http, JwtProvider jwtProvider) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
                 .formLogin(f -> f.disable())
                 .httpBasic(b -> b.disable())
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/jwt/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/member/login").permitAll()
                         .requestMatchers("/member/join").permitAll()
                         .requestMatchers("/", "/signup", "/api/v1/**", "/member/readOne", "/member/readAll", "/member/my_page/*").permitAll()
@@ -43,7 +46,7 @@ public class SecurityConfig {
     }
 
 
-//    @Bean
+    //    @Bean
 //    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
 //        http.formLogin(form -> {form
 //                .loginPage("/member/login")
