@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.anpetna.service.BlacklistServiceTests" tests="6" skipped="0" failures="0" errors="0" timestamp="2025-08-24T03:58:07" hostname="220-04" time="1.647">
+  <properties/>
+  <testcase name="addToBlacklist_incorrectTest()" classname="com.anpetna.service.BlacklistServiceTests" time="1.347"/>
+  <testcase name="purgeExpiredTest()" classname="com.anpetna.service.BlacklistServiceTests" time="0.012"/>
+  <testcase name="isBlacklisted_true_falseTest()" classname="com.anpetna.service.BlacklistServiceTests" time="0.099"/>
+  <testcase name="addToBlacklist_alreadyExistTest()" classname="com.anpetna.service.BlacklistServiceTests" time="0.155"/>
+  <testcase name="addToBlacklist_validTest()" classname="com.anpetna.service.BlacklistServiceTests" time="0.018"/>
+  <testcase name="addToBlacklist_expiredTest()" classname="com.anpetna.service.BlacklistServiceTests" time="0.006"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

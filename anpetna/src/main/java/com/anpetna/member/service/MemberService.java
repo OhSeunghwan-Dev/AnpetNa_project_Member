@@ -33,10 +33,6 @@ public interface MemberService extends UserDetailsService {
 
     DeleteMemberRes delete(DeleteMemberReq deleteMemberReq) throws MemberIdExistException;
 
-//    LoginMemberRes login(LoginMemberReq loginMemberReq) throws MemberIdExistException;
-//
-//    LogoutMemberRes logout(LogoutMemberReq req);
-
     static class MemberIdExistException extends Exception {
 
     }
