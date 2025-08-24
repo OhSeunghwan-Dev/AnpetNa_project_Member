@@ -1,15 +1,19 @@
 package com.anpetna.member.refreshToken.service;
 
 import com.anpetna.config.JwtProvider;
+import com.anpetna.member.domain.MemberEntity;
 import com.anpetna.member.dto.loginMember.LoginMemberReq;
 import com.anpetna.member.refreshToken.dto.LoginRequest;
 import com.anpetna.member.refreshToken.dto.TokenResponse;
 import com.anpetna.member.refreshToken.entity.TokenEntity;
 import com.anpetna.member.refreshToken.repository.TokenRepository;
 import com.anpetna.member.refreshToken.util.TokenHash;
+import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.time.Instant;
 
 @Service
 @RequiredArgsConstructor
@@ -19,9 +23,10 @@ public class JwtServiceImpl implements JwtService {
     private final JwtProvider jwtProvider;
     private final PasswordEncoder passwordEncoder;
     private final TokenHash tokenHash;
+    private final BlacklistServiceImpl blacklistService;
 
     @Override
-    public TokenResponse login(LoginMemberReq loginMemberReq){
+    public TokenResponse login(LoginMemberReq loginMemberReq, MemberEntity memberEntity){
         // 1) 사용자 식별자로 토큰 레코드 조회
         TokenEntity tokenEntity = tokenRepository.findByTokenMemberId(loginMemberReq.getMemberId())
                 .orElseThrow(()->new RuntimeException("사용자를 찾을 수가 없습니다"));
@@ -29,15 +34,15 @@ public class JwtServiceImpl implements JwtService {
         // 2) 비밀번호 검증
         //    - passwordEncoder.matches(rawPassword, encodedPassword)
         //    - 요청으로 들어온 평문 비밀번호와 DB에 저장된 암호문을 비교
-        if (!passwordEncoder.matches(loginMemberReq.getMemberPw(),tokenEntity.getPw())){
+        if (!passwordEncoder.matches(loginMemberReq.getMemberPw(),memberEntity.getMemberPw())){
             throw new RuntimeException("비밀번호가 일치하지 않습니다");
         }
 
         // 3) JWT 발급 (subject = 사용자 id)
         //    - AccessToken: 짧은 수명, 요청 인증에 사용
         //    - RefreshToken: 긴 수명, 재발급 용도
-        String accessToken = jwtProvider.createAccessToken(tokenEntity.getId());
-        String refreshToken = jwtProvider.createRefreshToken(tokenEntity.getId());
+        String accessToken = jwtProvider.createAccessToken(tokenEntity.getMemberId());
+        String refreshToken = jwtProvider.createRefreshToken(tokenEntity.getMemberId());
 
         // 4) RefreshToken 저장
         //    - 평문 저장은 위험하므로 해시(sha256)로 변환해 저장 (유출 피해 최소화)
@@ -84,6 +89,29 @@ public class JwtServiceImpl implements JwtService {
         //AccessToken: 즉시 사용
         //RefreshToken: 다음 갱신 때 클라이언트가 다시 제출
         return new TokenResponse(newAccessToken, newRefreshToken);
+    }
 
+    @Override
+    public void logout(String refreshToken, String accessToken, TokenEntity tokenEntity){
+        //클라이언트가 보낸 refreshToken의 유효성 검사
+        if(!jwtProvider.validateToken(refreshToken)){
+            throw new RuntimeException("무효한 토큰입니다");
+        }
+
+        String reqRefreshToken = tokenHash.sha256(refreshToken); //요청받은 refresh토큰을 hash로 변환
+
+        //DB에 저장된 해시값과 비교 (불일치 시 위조/재사용/오류로 간주)
+        if (!reqRefreshToken.equals(tokenEntity.getRefreshToken())){
+            throw new RuntimeException("토큰이 맞지 않습니다");
+        }
+
+        //Refresh Token 무효화 (삭제 or revoke)
+        tokenRepository.revokeByMemberId(tokenEntity.getMemberId());
+
+        //Access Token 즉시 차단 → 블랙리스트 서비스에 “그대로” 전달
+        //당신의 BlacklistServiceImpl은 토큰 원문을 받아 내부에서 parse + exp 확인 + 해시 저장을 처리합니다.
+        blacklistService.addToBlacklist(accessToken);
+
+        // 3) 멱등성: 이미 무효화/블랙리스트여도 예외 없이 통과
     }
 }

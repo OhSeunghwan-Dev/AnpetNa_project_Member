@@ -1,8 +1,8 @@
 package com.anpetna.member.refreshToken.service;
 
 import com.anpetna.config.JwtProvider;
-import com.anpetna.member.refreshToken.entity.BlackListedAccessEntity;
-import com.anpetna.member.refreshToken.repository.BlacklistedAccessRepository;
+import com.anpetna.member.refreshToken.entity.BlackListedEntity;
+import com.anpetna.member.refreshToken.repository.BlacklistedRepository;
 import com.anpetna.member.refreshToken.util.TokenHash;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
@@ -13,9 +13,9 @@ import java.time.Instant;
 
 @Service
 @RequiredArgsConstructor
-public class AccessBlacklistServiceImpl implements AccessBlacklistService {
+public class BlacklistServiceImpl implements BlacklistService {
 
-    private final BlacklistedAccessRepository blacklistRepo;
+    private final BlacklistedRepository blacklistRepo;
     private final JwtProvider jwtProvider;
     private final TokenHash tokenHash;
 
@@ -54,7 +54,7 @@ public class AccessBlacklistServiceImpl implements AccessBlacklistService {
 
         // 신규 블랙리스트 레코드 저장(expires_at = AT.exp)
         if (!exists) {
-            var entity = new BlackListedAccessEntity();
+            var entity = new BlackListedEntity();
             entity.setAccessTokenHash(accessHash);
             entity.setExpiresAt(expiresAt);
             blacklistRepo.save(entity);

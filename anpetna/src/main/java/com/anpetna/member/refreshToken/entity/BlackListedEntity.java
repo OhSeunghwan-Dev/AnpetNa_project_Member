@@ -8,18 +8,23 @@ import lombok.Setter;
 import java.time.Instant;
 
 @Entity
-@Table(name = "anpetna_access_blacklist")
+@Table(name = "anpetna_blacklist")
 @Getter
 @Setter
 @NoArgsConstructor
-public class BlackListedAccessEntity {
+public class BlackListedEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long blackno;
+    private Long blackNo;
 
+    @Column(name = "access_token", nullable = false)
     private String accessTokenHash; // 해싱된 access토큰
 
+    @Column(name = "refresh_token", nullable = false)
+    private String refreshTokenHash; // 해싱된 refresh토큰
+
+    @Column(name = "access_expiresAt",nullable = false)
     private Instant expiresAt;      // 만료시간
 
 }

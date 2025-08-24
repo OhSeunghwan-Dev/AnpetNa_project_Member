@@ -1,4 +1,5 @@
 package com.anpetna.config;
+import com.anpetna.member.refreshToken.service.BlacklistServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,7 +20,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http, JwtProvider jwtProvider) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http, JwtProvider jwtProvider, BlacklistServiceImpl blacklistService) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
                 .formLogin(f -> f.disable())
@@ -32,7 +33,7 @@ public class SecurityConfig {
                         .requestMatchers("/", "/signup", "/api/v1/**", "/member/readOne", "/member/readAll", "/member/my_page/*").permitAll()
                         .anyRequest().authenticated()
                 )
-                .addFilterBefore(new JwtAuthenticationFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new JwtAuthenticationFilter(jwtProvider,blacklistService), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

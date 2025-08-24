@@ -7,6 +7,7 @@ import com.querydsl.core.types.dsl.*;
 import com.querydsl.core.types.PathMetadata;
 import javax.annotation.processing.Generated;
 import com.querydsl.core.types.Path;
+import com.querydsl.core.types.dsl.PathInits;
 
 
 /**
@@ -17,28 +18,41 @@ public class QTokenEntity extends EntityPathBase<TokenEntity> {
 
     private static final long serialVersionUID = -1485408925L;
 
+    private static final PathInits INITS = PathInits.DIRECT2;
+
     public static final QTokenEntity tokenEntity = new QTokenEntity("tokenEntity");
 
-    public final StringPath accessToken = createString("accessToken");
+    public final DateTimePath<java.time.Instant> expiresAt = createDateTime("expiresAt", java.time.Instant.class);
 
-    public final StringPath id = createString("id");
+    public final com.anpetna.member.domain.QMemberEntity member;
 
-    public final StringPath pw = createString("pw");
+    public final StringPath memberId = createString("memberId");
 
     public final StringPath refreshToken = createString("refreshToken");
 
-    public final NumberPath<Long> tno = createNumber("tno", Long.class);
+    public final DateTimePath<java.time.Instant> revokedAt = createDateTime("revokedAt", java.time.Instant.class);
+
+    public final NumberPath<Long> tokenNo = createNumber("tokenNo", Long.class);
 
     public QTokenEntity(String variable) {
-        super(TokenEntity.class, forVariable(variable));
+        this(TokenEntity.class, forVariable(variable), INITS);
     }
 
     public QTokenEntity(Path<? extends TokenEntity> path) {
-        super(path.getType(), path.getMetadata());
+        this(path.getType(), path.getMetadata(), PathInits.getFor(path.getMetadata(), INITS));
     }
 
     public QTokenEntity(PathMetadata metadata) {
-        super(TokenEntity.class, metadata);
+        this(metadata, PathInits.getFor(metadata, INITS));
+    }
+
+    public QTokenEntity(PathMetadata metadata, PathInits inits) {
+        this(TokenEntity.class, metadata, inits);
+    }
+
+    public QTokenEntity(Class<? extends TokenEntity> type, PathMetadata metadata, PathInits inits) {
+        super(type, metadata, inits);
+        this.member = inits.isInitialized("member") ? new com.anpetna.member.domain.QMemberEntity(forProperty("member")) : null;
     }
 
 }

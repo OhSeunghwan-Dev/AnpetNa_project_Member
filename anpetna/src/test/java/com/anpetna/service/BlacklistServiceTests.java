@@ -1,14 +1,12 @@
 package com.anpetna.service;
 
 import com.anpetna.config.JwtProvider;
-import com.anpetna.member.refreshToken.entity.BlackListedAccessEntity;
-import com.anpetna.member.refreshToken.repository.BlacklistedAccessRepository;
-import com.anpetna.member.refreshToken.service.AccessBlacklistService;
-import com.anpetna.member.refreshToken.service.AccessBlacklistServiceImpl;
+import com.anpetna.member.refreshToken.entity.BlackListedEntity;
+import com.anpetna.member.refreshToken.repository.BlacklistedRepository;
+import com.anpetna.member.refreshToken.service.BlacklistServiceImpl;
 import com.anpetna.member.refreshToken.util.TokenHash;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -28,9 +26,9 @@ import static org.mockito.Mockito.*;
 public class BlacklistServiceTests {
 
     @InjectMocks
-    AccessBlacklistServiceImpl sut;
+    BlacklistServiceImpl sut;
     @Mock
-    BlacklistedAccessRepository repo;
+    BlacklistedRepository repo;
     @Mock
     JwtProvider jwtProvider;
     @Mock
@@ -62,9 +60,9 @@ public class BlacklistServiceTests {
         sut.addToBlacklist(AT);
 
         // then: save 1회, 저장되는 값 검증
-        ArgumentCaptor<BlackListedAccessEntity> cap = ArgumentCaptor.forClass(BlackListedAccessEntity.class);
+        ArgumentCaptor<BlackListedEntity> cap = ArgumentCaptor.forClass(BlackListedEntity.class);
         verify(repo).save(cap.capture());
-        BlackListedAccessEntity saved = cap.getValue();
+        BlackListedEntity saved = cap.getValue();
         assertThat(saved.getAccessTokenHash()).isEqualTo(HASH);
         assertThat(saved.getExpiresAt()).isEqualTo(future);
         verify(repo).existsByAccessTokenHashAndExpiresAtAfter(eq(HASH), any(Instant.class));
