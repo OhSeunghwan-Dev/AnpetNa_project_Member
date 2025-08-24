@@ -17,7 +17,8 @@ public class TokenEntity {
 
     @Column(unique = true)
     private String id;
-    private String Pw;
+    private String pw;
 
-    private String RefreshToken;
+    private String refreshToken;
+    private String accessToken;
 }

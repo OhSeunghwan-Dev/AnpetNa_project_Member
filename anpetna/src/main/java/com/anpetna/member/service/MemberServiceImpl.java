@@ -18,6 +18,7 @@ import com.anpetna.member.dto.readMemberOne.ReadMemberOneReq;
 import com.anpetna.member.dto.readMemberOne.ReadMemberOneRes;
 import com.anpetna.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -35,6 +36,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Service
 @Transactional
+@Log
 public class MemberServiceImpl implements MemberService {
 
     private final ModelMapper modelMapper;
@@ -76,45 +78,6 @@ public class MemberServiceImpl implements MemberService {
                 .build();
     }
 
-//    @Override
-//    public LoginMemberRes login(LoginMemberReq req) {
-//        MemberEntity member = memberRepository.findByMemberId((req.getMemberId()));
-//
-//        if (member == null) {
-//            throw new RuntimeException("아이디가 존재하지 않습니다.");
-//        }
-//        if (!member.getMemberPw().equals(req.getMemberPw())) {
-//            throw new RuntimeException("비밀번호가 올바르지 않습니다.");
-//        }
-//        LoginMemberRes res = new LoginMemberRes();
-////        res.setMemberId(member.getMemberId());
-////        res.setMemberPw(req.getMemberPw());
-//        res.setToken(req.getMemberId());
-//        res.setToken(req.getMemberPw());
-//        return res;
-//    }
-
-//    @Override
-//    public ResponseEntity<Void> logout(LoginMemberReq req) {
-////        LoginMemberRes res = new LoginMemberRes();
-////        res.setToken(null);
-//        return ResponseEntity.noContent().build();
-//        //                  204로 응답 빌더를 만들어서 반환 - 요청은 성공했지만 돌려줄 데이터가 없음
-//    }
-
-//    @ResponseStatus(HttpStatus.NO_CONTENT)
-//    public void logout() {}
-
-    @Override
-    public LogoutMemberRes logout(LogoutMemberReq req) {
-    String token = req.getToken();
-    if (token == null || token.isBlank()) {
-        throw new IllegalArgumentException("토큰이 없습니다.");
-        }
-    // 바디가 필요 없으면 빈 응답 DTO 반환
-    return new LogoutMemberRes(); // 혹은 메시지/코드 필드만 채워서 반환
-}
-
     @Override
     public ReadMemberOneRes readOne(ReadMemberOneReq readMemberOneReq) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -149,6 +112,7 @@ public class MemberServiceImpl implements MemberService {
         String memberId = modifyMemberReq.getMemberId();
 
         MemberEntity member = memberRepository.findById(memberId).orElse(null);
+        System.out.println(member);
         if (member == null) {
             throw new UsernameNotFoundException(memberId);
         }
@@ -160,7 +124,7 @@ public class MemberServiceImpl implements MemberService {
         member.setMemberRoadAddress(modifyMemberReq.getMemberRoadAddress());
         member.setMemberEtc(modifyMemberReq.getEtc());
         member.setMemberHasPet(modifyMemberReq.getMemberHasPet());
-//        member.setImages(modifyMemberReq.getMemberFileImage());
+        member.setImages(modifyMemberReq.getMemberFileImage());
 
         memberRepository.save(member);
 
