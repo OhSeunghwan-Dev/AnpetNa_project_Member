@@ -1,6 +1,6 @@
 package com.anpetna.member.refreshToken.service;
 
-public interface AccessBlacklistService {
+public interface BlacklistService {
 
     // access 토큰을 블랙리스트에 추가
     void addToBlacklist(String accessToken);

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.anpetna.service.TokenServiceTests" tests="1" skipped="0" failures="0" errors="0" timestamp="2025-08-24T06:39:35" hostname="220-04" time="0.165">
+  <properties/>
+  <testcase name="logoutTest()" classname="com.anpetna.service.TokenServiceTests" time="0.165"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

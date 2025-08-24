@@ -19,7 +19,16 @@ public class JwtProvider {
 
     private final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
     private final long accessTokenValidity = 1000 * 60 * 15; // 15분
-    private final long refreshTokenValidity = 1000L * 60 * 60 * 24 * 7; // 7일
+    private final long refreshTokenValidity = 1000L * 60 * 60 * 24; // 1일
+
+    private final JwtParser strictParser; // 예외를 그대로 던지는 엄격 파서(불변 파서 (thread-safe))
+
+//    생성자에서 secret 주입 → key 생성 → strictParser 생성(초기화 보장)
+    public JwtProvider(@Value("${jwt.secret}") String secret) {
+        this.strictParser = Jwts.parserBuilder()   // 여기서 초기화 보장
+                .setSigningKey(key)//같은 키로 검증
+                .build();
+    }
 
     public String createAccessToken(String username) {
         return Jwts.builder()
@@ -40,6 +49,12 @@ public class JwtProvider {
     public String getUsername(String token) {
         return Jwts.parserBuilder().setSigningKey(key).build()
                 .parseClaimsJws(token).getBody().getSubject();
+    }
+
+    public void validateTokenOrThrow(String token) throws JwtException, IllegalArgumentException {
+        // parseClaimsJws() 자체가 서명/형식/만료 등을 검증하고,
+        // 문제가 있으면 ExpiredJwtException, SignatureException 등을 던집니다.
+        strictParser.parseClaimsJws(token);
     }
 
     public boolean validateToken(String token) {

@@ -1,11 +1,11 @@
 package com.anpetna.member.refreshToken.repository;
 
-import com.anpetna.member.refreshToken.entity.BlackListedAccessEntity;
+import com.anpetna.member.refreshToken.entity.BlackListedEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.Instant;
 
-public interface BlacklistedAccessRepository extends JpaRepository<BlackListedAccessEntity, Long> {
+public interface BlacklistedRepository extends JpaRepository<BlackListedEntity, Long> {
 
     // 블랙리스트에 남아있는 해시토큰이 아직 만료되지 않았는지 체크
     boolean existsByAccessTokenHashAndExpiresAtAfter(String accessTokenHash, Instant now);
